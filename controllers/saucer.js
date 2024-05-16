@@ -1,73 +1,97 @@
-require('dotenv').config({ path: require('find-config')('.env') });
-const { ethers } = require('ethers');
-const saucersContract = require('../artifacts/contracts/Saucer.sol/Saucers.json');
-const { SAUCERS_CONTRACT, API_URL, PRIVATE_KEY } = process.env;
+//require('dotenv').config()
+require('dotenv').config({path:require('find-config')('.env')})
+const fs = require('fs')
+const FormData = require('form-data')
+const axios = require('axios')
+const {ethers} = require('ethers')
+const contract = require('../artifacts/contracts/Saucer.sol/Saucers.json')
+const { format } = require('path')
+const {
+    PINATA_API_KEY,
+    PINATA_SECRET_KEY,
+    API_URL,
+    PRIVATE_KEY,
+    PUBLIC_KEY,
+    SAUCER_CONTRACT
+} = process.env
 
-// Función para crear una transacción y enviarla
-async function sendTransaction(provider, wallet, contract, method, args) {
-    const transaction = await contract.connect(wallet)[method](...args);
-    const estimateGas = await provider.estimateGas(transaction);
-    transaction.gasLimit = estimateGas;
-
-    const signedTx = await wallet.signTransaction(transaction);
-    const transactionReceipt = await provider.sendTransaction(signedTx);
-    await transactionReceipt.wait();
-
-    console.log(`Transacción ${method} exitosa. Hash: ${transactionReceipt.hash}`);
-
-    return transactionReceipt.hash;
+async function createTransaction(provider,method,params) {
+    const etherInterface = new ethers.utils.Interface(contract.abi);
+    const nonce = await provider.getTransactionCount(PUBLIC_KEY,'latest')
+    const gasPrice = await provider.getGasPrice();
+    const network = await provider.getNetwork();
+    const {chainId} = network;
+    const transaction = {
+        from : PUBLIC_KEY,
+        to : SAUCER_CONTRACT,
+        nonce,
+        chainId,
+        gasPrice,
+        data: etherInterface.encodeFunctionData(method,params)
+    }
+    return transaction
 }
 
-// Función para crear un nuevo platillo en el contrato
 async function createSaucer(name, price) {
     const provider = new ethers.providers.JsonRpcProvider(API_URL);
-    const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-    const contract = new ethers.Contract(SAUCERS_CONTRACT, saucersContract.abi, wallet);
-
-    return sendTransaction(provider, wallet, contract, 'createSaucer', [name, price]);
+    const wallet = new ethers.Wallet(PRIVATE_KEY,provider);
+    const transaction = await createTransaction(provider,"createSaucer",[name,price]);
+    const estimateGas = await provider.estimateGas(transaction);
+    transaction["gasLimit"] = estimateGas;
+    const singedTx = await wallet.signTransaction(transaction);
+    const transactionRecepit = await provider.sendTransaction(singedTx);
+    await transactionRecepit.wait();
+    const hash = transactionRecepit.hash;
+    console.log("Transaction Hash",hash)
+    const receipt = await provider.getTransactionReceipt(hash)
+    return receipt
 }
 
-// Función para modificar el precio de un platillo existente en el contrato
-async function modifySaucerPrice(saucerId, newPrice) {
-    const provider = new ethers.providers.JsonRpcProvider(API_URL);
-    const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-    const contract = new ethers.Contract(SAUCERS_CONTRACT, saucersContract.abi, wallet);
-
-    return sendTransaction(provider, wallet, contract, 'modifySaucerPrice', [saucerId, newPrice]);
-}
-
-// Función para obtener todos los platillos del contrato
 async function getAllSaucers() {
     const provider = new ethers.providers.JsonRpcProvider(API_URL);
-    const contract = new ethers.Contract(SAUCERS_CONTRACT, saucersContract.abi, provider);
-
-    const saucers = await contract.getAllSaucers();
-    var formattedSaucers = [];
-
-    saucers.forEach((saucer) => {
-        formattedSaucers.push(formatSaucer(saucer)); // Aquí asumiendo que tienes una función formatSaucer para formatear cada platillo
-    });
-
-    console.log("Lista de platillos:", formattedSaucers);
-
-    return formattedSaucers;
+    const saucerContract = new ethers.Contract(SAUCER_CONTRACT,contract.abi,provider)
+    const result = await saucerContract.getAllSaucers()
+    var saucers = []
+    result.forEach(element => {
+        saucers.push(formatSaucer(element))
+    })
+    return saucers;
 }
 
-
-// Función para obtener un platillo por su ID
 async function getSaucerById(saucerId) {
     const provider = new ethers.providers.JsonRpcProvider(API_URL);
-    const contract = new ethers.Contract(SAUCERS_CONTRACT, saucersContract.abi, provider);
+    const saucerContract = new ethers.Contract(SAUCER_CONTRACT,contract.abi,provider)
+    const result = await saucerContract.getSaucerById(saucerId)
+    return formatSaucer(result);
+}
 
-    const saucer = await contract.getSaucerById(saucerId);
-    console.log("Información del platillo:", saucer);
+async function modifySaucerPrice(saucerId,amount){
+    const provider = new ethers.providers.JsonRpcProvider(API_URL);
+    const wallet = new ethers.Wallet(PRIVATE_KEY,provider);
+    const transaction = await createTransaction(provider,"modifySaucerPrice",[saucerId,amount]);
+    const estimateGas = await provider.estimateGas(transaction);
+    transaction["gasLimit"] = estimateGas;
+    const singedTx = await wallet.signTransaction(transaction);
+    const transactionRecepit = await provider.sendTransaction(singedTx);
+    await transactionRecepit.wait();
+    const hash = transactionRecepit.hash;
+    console.log("Transaction Hash",hash)
+    const receipt = await provider.getTransactionReceipt(hash)
+    return receipt
+}
 
-    return saucer;
+function formatSaucer(info) {
+    return {
+        id:ethers.BigNumber.from(info[0]).toNumber(),
+        name:info[1],
+        price:ethers.BigNumber.from(info[2]).toNumber()
+        
+    }
 }
 
 module.exports = {
-    createSaucer,
-    modifySaucerPrice,
-    getAllSaucers,
-    getSaucerById
-};
+    createSaucer:createSaucer,
+    getAllSaucers:getAllSaucers,
+    getSaucerById:getSaucerById,
+    modifySaucerPrice:modifySaucerPrice
+}

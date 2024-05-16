@@ -21,7 +21,7 @@ router.put('/clients/:clientId', async (req, res) => {
     const { newAmount } = req.body;
 
     try {
-        await clientController.modifyClientTD(clientId, newAmount);
+        await clientController.modifyTD(clientId, newAmount);
         res.send("Monto de dinero (TD) del cliente modificado exitosamente.");
     } catch (error) {
         console.error("Error al modificar el monto del cliente:", error);

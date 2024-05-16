@@ -1,56 +1,81 @@
-require('dotenv').config({ path: require('find-config')('.env') });
-const { ethers } = require('ethers');
-const ticketsContract = require('../artifacts/contracts/Ticket.sol/Tickets.json');
-const { TICKETS_CONTRACT, API_URL, PRIVATE_KEY } = process.env;
+//require('dotenv').config()
+require('dotenv').config({path:require('find-config')('.env')})
+const fs = require('fs')
+const FormData = require('form-data')
+const axios = require('axios')
+const {ethers} = require('ethers')
+const contract = require('../artifacts/contracts/Ticket.sol/Tickets.json')
+const { format } = require('path')
+const {
+    PINATA_API_KEY,
+    PINATA_SECRET_KEY,
+    API_URL,
+    PRIVATE_KEY,
+    PUBLIC_KEY,
+    TICKET_CONTRACT
+} = process.env
 
-// Función para crear una transacción y enviarla
-async function sendTransaction(provider, wallet, contract, method, args) {
-    const transaction = await contract.connect(wallet)[method](...args);
-    const estimateGas = await provider.estimateGas(transaction);
-    transaction.gasLimit = estimateGas;
-
-    const signedTx = await wallet.signTransaction(transaction);
-    const transactionReceipt = await provider.sendTransaction(signedTx);
-    await transactionReceipt.wait();
-
-    console.log(`Transacción ${method} exitosa. Hash: ${transactionReceipt.hash}`);
-
-    return transactionReceipt.hash;
+async function createTransaction(provider,method,params) {
+    const etherInterface = new ethers.utils.Interface(contract.abi);
+    const nonce = await provider.getTransactionCount(PUBLIC_KEY,'latest')
+    const gasPrice = await provider.getGasPrice();
+    const network = await provider.getNetwork();
+    const {chainId} = network;
+    const transaction = {
+        from : PUBLIC_KEY,
+        to : TICKET_CONTRACT,
+        nonce,
+        chainId,
+        gasPrice,
+        data: etherInterface.encodeFunctionData(method,params)
+    }
+    return transaction
 }
 
-// Función para crear un nuevo ticket con múltiples platillos
 async function createTicket(saucerIds, clientId) {
     const provider = new ethers.providers.JsonRpcProvider(API_URL);
-    const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-    const contract = new ethers.Contract(TICKETS_CONTRACT, ticketsContract.abi, wallet);
-
-    return sendTransaction(provider, wallet, contract, 'createTicket', [saucerIds, clientId]);
+    const wallet = new ethers.Wallet(PRIVATE_KEY,provider);
+    const transaction = await createTransaction(provider,"createTicket",[saucerIds,clientId]);
+    const estimateGas = await provider.estimateGas(transaction);
+    transaction["gasLimit"] = estimateGas;
+    const singedTx = await wallet.signTransaction(transaction);
+    const transactionRecepit = await provider.sendTransaction(singedTx);
+    await transactionRecepit.wait();
+    const hash = transactionRecepit.hash;
+    console.log("Transaction Hash",hash)
+    const receipt = await provider.getTransactionReceipt(hash)
+    return receipt
 }
 
-// Función para obtener un ticket por su ID
-async function getTicketById(ticketId) {
-    const provider = new ethers.providers.JsonRpcProvider(API_URL);
-    const contract = new ethers.Contract(TICKETS_CONTRACT, ticketsContract.abi, provider);
-
-    const ticket = await contract.getTicketById(ticketId);
-    console.log("Información del ticket:", ticket);
-
-    return ticket;
-}
-
-// Función para obtener todos los tickets
 async function getAllTickets() {
     const provider = new ethers.providers.JsonRpcProvider(API_URL);
-    const contract = new ethers.Contract(TICKETS_CONTRACT, ticketsContract.abi, provider);
-
-    const tickets = await contract.getAllTickets();
-    console.log("Lista de tickets:", tickets);
-
+    const ticketContract = new ethers.Contract(TICKET_CONTRACT,contract.abi,provider)
+    const result = await ticketContract.getAllTickets()
+    var tickets = []
+    result.forEach(element => {
+        tickets.push(formatTicket(element))
+    })
     return tickets;
 }
 
+async function getTicketById(ticketId) {
+    const provider = new ethers.providers.JsonRpcProvider(API_URL);
+    const ticketContract = new ethers.Contract(TICKET_CONTRACT,contract.abi,provider)
+    const result = await ticketContract.getClientsById(ticketId)
+    return formatTicket(result);
+}
+
+function formatTicket(info) {
+    return {
+        id:ethers.BigNumber.from(info[0]).toNumber(),
+        items:info[1],
+        clientId:ethers.BigNumber.from(info[2]).toNumber(),
+        totalAmount:ethers.BigNumber.from(info[3]).toNumber()
+    }
+}
+
 module.exports = {
-    createTicket,
-    getTicketById,
-    getAllTickets
-};
+    createTicket:createTicket,
+    getAllTickets:getAllTickets,
+    getTicketById:getTicketById
+}
