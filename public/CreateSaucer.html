@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Nuevo Platillo</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <h1>Crear Nuevo Platillo</h1>
+
+    <form id="createSaucerForm">
+        <label for="name">Nombre del Platillo:</label>
+        <input type="text" id="name" name="name" placeholder="Ingrese el nombre del platillo" required><br><br>
+        
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" placeholder="Ingrese el precio del platillo" required><br><br>
+
+        <button type="submit">Crear Platillo</button>
+    </form>
+
+    <div id="createSaucerResult"></div>
+
+    <script>
+        const form = document.getElementById('createSaucerForm');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+
+            try {
+                const response = await fetch('/api/saucers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, price })
+                });
+
+                const message = await response.text();
+                const createSaucerResult = document.getElementById('createSaucerResult');
+                createSaucerResult.textContent = message;
+
+                // Limpia el formulario después de crear el platillo
+                form.reset();
+            } catch (error) {
+                console.error('Error al crear el platillo:', error);
+                const createSaucerResult = document.getElementById('createSaucerResult');
+                createSaucerResult.textContent = 'Error al crear el platillo';
+            }
+        });
+    </script>
+</body>
+</html>

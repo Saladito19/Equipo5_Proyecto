@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Cliente</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <h1>Detalles de Cliente</h1>
+
+    <label for="clientIdInput">ID del Cliente:</label>
+    <input type="number" id="clientIdInput" placeholder="Ingrese el ID del cliente">
+
+    <button onclick="fetchClientDetails()">Mostrar Detalles</button>
+
+    <div id="clientDetails"></div>
+
+    <script>
+        async function fetchClientDetails() {
+            const clientIdInput = document.getElementById('clientIdInput');
+            const clientId = clientIdInput.value;
+
+            if (!clientId) {
+                alert('Por favor ingrese un ID de cliente');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/clients/${clientId}`);
+                if (!response.ok) {
+                    throw new Error('No se pudo obtener los detalles del cliente');
+                }
+                const client = await response.json();
+
+                const clientDetails = document.getElementById('clientDetails');
+                clientDetails.innerHTML = `
+                    <p>ID: ${client.id}</p>
+                    <p>Nombre: ${client.name}</p>
+                    <p>Monto Inicial: $${client.initialAmount}</p>
+                    <!-- Agrega más detalles del cliente aquí según sea necesario -->`;
+            } catch (error) {
+                console.error('Error al obtener detalles del cliente:', error);
+                const clientDetails = document.getElementById('clientDetails');
+                clientDetails.textContent = 'Error al obtener detalles del cliente';
+            }
+        }
+    </script>
+</body>
+</html>

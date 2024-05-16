@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <h1>Lista de Clientes</h1>
+
+    <div id="clientsList"></div>
+
+    <script>
+        async function fetchClients() {
+            try {
+                const response = await fetch('/api/clients');
+                if (!response.ok) {
+                    throw new Error('No se pudo obtener la lista de clientes');
+                }
+                const clients = await response.json();
+
+                const clientsList = document.getElementById('clientsList');
+                clientsList.innerHTML = '<h2>Clientes:</h2>';
+                clients.forEach(client => {
+                    clientsList.innerHTML += `
+                        <p>ID: ${client.id} - Nombre: ${client.name} - Monto Inicial: $${client.initialAmount}</p>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error al obtener la lista de clientes:', error);
+                const clientsList = document.getElementById('clientsList');
+                clientsList.textContent = 'Error al obtener la lista de clientes';
+            }
+        }
+
+        // Cargar la lista de clientes al cargar la página
+        fetchClients();
+    </script>
+</body>
+</html>

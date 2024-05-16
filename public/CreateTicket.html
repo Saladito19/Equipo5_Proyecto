@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Nuevo Ticket</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <h1>Crear Nuevo Ticket</h1>
+
+    <form id="createTicketForm">
+        <label for="saucerIds">IDs de Platillos (separados por coma):</label>
+        <input type="text" id="saucerIds" name="saucerIds" placeholder="Ingrese los IDs de los platillos" required><br><br>
+        
+        <label for="clientId">ID del Cliente:</label>
+        <input type="number" id="clientId" name="clientId" placeholder="Ingrese el ID del cliente" required><br><br>
+
+        <button type="submit">Crear Ticket</button>
+    </form>
+
+    <div id="createTicketResult"></div>
+
+    <script>
+        const form = document.getElementById('createTicketForm');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const saucerIds = document.getElementById('saucerIds').value.split(',').map(id => id.trim());
+            const clientId = document.getElementById('clientId').value;
+
+            try {
+                const response = await fetch('/api/tickets', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ saucerIds, clientId })
+                });
+
+                const message = await response.text();
+                const createTicketResult = document.getElementById('createTicketResult');
+                createTicketResult.textContent = message;
+
+                // Limpia el formulario después de crear el ticket
+                form.reset();
+            } catch (error) {
+                console.error('Error al crear el ticket:', error);
+                const createTicketResult = document.getElementById('createTicketResult');
+                createTicketResult.textContent = 'Error al crear el ticket';
+            }
+        });
+    </script>
+</body>
+</html>

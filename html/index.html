@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鹿肉のタコス</title>
+    <!-- Enlace a Google Fonts para cargar la fuente Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Enlace a Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos adicionales */
+        hr{
+            border: none;
+            border-top: 50px solid rgb(57, 133, 120);
+        }
+        body, html{
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        body > hr:first-of-type {
+            margin-top: 0;
+        }
+        .titulo {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .button-container-left {
+            display: flex;
+            justify-content: flex-start; /* Alinea los elementos hacia la izquierda */
+            margin-bottom: 10px; /* Espacio entre cada conjunto de botones */
+        }
+        .button-container-right {
+            float: right; /* Alinea el contenedor a la derecha */
+            width: 250px; /* Ancho del contenedor de la imagen */
+            height: 350px; /* Altura del contenedor de la imagen */
+            background-image: url('https://pbs.twimg.com/media/FBeNSDEX0AEpXS-.jpg'); /* Ruta de la imagen de fondo */
+            background-size: cover; /* Ajusta el tamaño de la imagen de fondo */
+            background-position: center; /* Centra la imagen de fondo */
+            border-radius: 20px; /* Borde redondeado */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            overflow: hidden; /* Oculta cualquier contenido que se desborde */
+            display: flex;
+            justify-content: center; /* Centra horizontalmente la imagen */
+        }
+        .button-container-left button {
+            margin-right: 10px; /* Espacio entre los botones */
+        }
+        .ad-container {
+            width: 220px;
+            height: 71px;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            padding: 10px;
+            animation: changeColor 1s infinite alternate;
+            margin-top: 20px; /* Espacio arriba del contenedor de publicidad */
+            margin-left: auto; /* Alinear a la derecha */
+            margin-right: auto; /* Alinear a la derecha */
+            position: relative; /* Asegura que el posicionamiento absoluto sea relativo a este contenedor */
+        }
+        @keyframes changeColor {
+            0% {
+                background-color: #ff0000;
+            }
+            25% {
+                background-color: #00ff00;
+            }
+            50% {
+                background-color: #0000ff;
+            }
+            75% {
+                background-color: #ffff00;
+            }
+            100% {
+                background-color: #ff00ff;
+            }
+        }
+        .ad-text {
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #000000;
+        }
+        .close-button {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <hr>
+    <h1 class="titulo">鹿肉のタコス</h1>
+    <hr>
+    <div class="container">
+        <!-- Contenedor de la imagen a la derecha -->
+        <div class="button-container button-container-right"></div>
+        <!-- Botones adicionales - Primera columna -->
+        <div class="button-container button-container-left">
+            <button class="btn btn-primary" onclick="window.location.href = '/ClientList.html';">Lista Clientes</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/ClientID.html';">Consultar ID</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/CreateClient.html';">Crear cliente</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/ModifyClient.html';">Modificar TD</button>
+        </div>
+        <!-- Botones adicionales - Segunda columna -->
+        <div class="button-container button-container-left">
+            <button class="btn btn-primary" onclick="window.location.href = '/SaucerList.html';">Lista Platillos</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/SaucerID.html';">Consultar ID</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/CreateSaucer.html';">Crear Platillo</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/ModifySaucer.html';">Modificar Precio</button>
+        </div>
+        <!-- Botones adicionales - Tercera columna -->
+        <div class="button-container button-container-left">
+            <button class="btn btn-primary" onclick="window.location.href = '/TicketList';">Lista Tickets</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/TicketID';">Consultar ID</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/CreateTicket';">Crear Ticket</button>
+        </div>
+        <div class="ad-container" id="adContainer">
+            <div class="close-button" id="closeBtn">X</div>
+            <div class=""></div>
+            <div class="ad-text">!!! GANASTE UN IPHONE 7 FELICIDADES HAZ CLICK AQUI PARA RECLAMARLO !!!
+               <button id="reclamarBtn">RECLAMAR</button>
+            </div>
+        </div>
+    </div>
+    <!-- Enlace a Bootstrap JS (opcional, dependiendo de los componentes que uses) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('reclamarBtn').addEventListener('click', function() {
+            // Redirigir a otra URL al cerrar el anuncio (opcional)
+            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+        });
+        document.getElementById('closeBtn').addEventListener('click', function() {
+            // Redirigir a otra URL al cerrar el anuncio (opcional)
+            window.location.href = 'https://www.youtube.com/watch?v=tgTUtfb0Ok8';
+        });
+    </script>
+</body>
+</html>

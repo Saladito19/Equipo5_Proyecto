@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Platillos</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <h1>Lista de Platillos</h1>
+
+    <div id="saucersList"></div>
+
+    <script>
+        async function fetchSaucers() {
+            try {
+                const response = await fetch('/api/saucers');
+                if (!response.ok) {
+                    throw new Error('No se pudo obtener la lista de platillos');
+                }
+                const saucers = await response.json();
+
+                const saucersList = document.getElementById('saucersList');
+                saucersList.innerHTML = '<h2>Platillos:</h2>';
+                saucers.forEach(saucer => {
+                    saucersList.innerHTML += `
+                        <p>ID: ${saucer.id} - Nombre: ${saucer.name} - Precio: $${saucer.price}</p>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error al obtener la lista de platillos:', error);
+                const saucersList = document.getElementById('saucersList');
+                saucersList.textContent = 'Error al obtener la lista de platillos';
+            }
+        }
+
+        // Cargar la lista de platillos al cargar la página
+        fetchSaucers();
+    </script>
+</body>
+</html>

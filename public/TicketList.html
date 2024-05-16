@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tickets</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <h1>Lista de Tickets</h1>
+
+    <div id="ticketsList"></div>
+
+    <script>
+        async function fetchTickets() {
+            try {
+                const response = await fetch('/api/tickets');
+                if (!response.ok) {
+                    throw new Error('No se pudo obtener la lista de tickets');
+                }
+                const tickets = await response.json();
+
+                const ticketsList = document.getElementById('ticketsList');
+                ticketsList.innerHTML = '<h2>Tickets:</h2>';
+                tickets.forEach(ticket => {
+                    ticketsList.innerHTML += `
+                        <p>ID: ${ticket.id} - Cliente: ${ticket.clientId} - Platillos: ${ticket.saucerIds.join(',')}</p>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error al obtener la lista de tickets:', error);
+                const ticketsList = document.getElementById('ticketsList');
+                ticketsList.textContent = 'Error al obtener la lista de tickets';
+            }
+        }
+
+        // Cargar la lista de tickets al cargar la página
+        fetchTickets();
+    </script>
+</body>
+</html>

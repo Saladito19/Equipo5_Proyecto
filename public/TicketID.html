@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Ticket</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <h1>Detalles de Ticket</h1>
+
+    <label for="ticketIdInput">ID del Ticket:</label>
+    <input type="number" id="ticketIdInput" placeholder="Ingrese el ID del ticket">
+
+    <button onclick="fetchTicketDetails()">Mostrar Detalles</button>
+
+    <div id="ticketDetails"></div>
+
+    <script>
+        async function fetchTicketDetails() {
+            const ticketIdInput = document.getElementById('ticketIdInput');
+            const ticketId = ticketIdInput.value;
+
+            if (!ticketId) {
+                alert('Por favor ingrese un ID de ticket');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/tickets/${ticketId}`);
+                if (!response.ok) {
+                    throw new Error('No se pudo obtener los detalles del ticket');
+                }
+                const ticket = await response.json();
+
+                const ticketDetails = document.getElementById('ticketDetails');
+                ticketDetails.innerHTML = `
+                    <p>ID: ${ticket.id}</p>
+                    <p>Cliente: ${ticket.clientId}</p>
+                    <p>Platillos: ${ticket.saucerIds.join(',')}</p>
+                    <!-- Agrega más detalles del ticket aquí según sea necesario -->
+                `;
+            } catch (error) {
+                console.error('Error al obtener detalles del ticket:', error);
+                const ticketDetails = document.getElementById('ticketDetails');
+                ticketDetails.textContent = 'Error al obtener detalles del ticket';
+            }
+        }
+    </script>
+</body>
+</html>

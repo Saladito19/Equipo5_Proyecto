@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Platillo</title>
+    <style>
+        /* Estilos CSS aquí */
+    </style>
+</head>
+<body>
+    <h1>Detalles de Platillo</h1>
+
+    <label for="saucerIdInput">ID del Platillo:</label>
+    <input type="number" id="saucerIdInput" placeholder="Ingrese el ID del platillo">
+
+    <button onclick="fetchSaucerDetails()">Mostrar Detalles</button>
+
+    <div id="saucerDetails"></div>
+
+    <script>
+        async function fetchSaucerDetails() {
+            const saucerIdInput = document.getElementById('saucerIdInput');
+            const saucerId = saucerIdInput.value;
+
+            if (!saucerId) {
+                alert('Por favor ingrese un ID de platillo');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/saucers/${saucerId}`);
+                if (!response.ok) {
+                    throw new Error('No se pudo obtener los detalles del platillo');
+                }
+                const saucer = await response.json();
+
+                const saucerDetails = document.getElementById('saucerDetails');
+                saucerDetails.innerHTML = `
+                    <p>ID: ${saucer.id}</p>
+                    <p>Nombre: ${saucer.name}</p>
+                    <p>Precio: $${saucer.price}</p>
+                    <!-- Agrega más detalles del platillo aquí según sea necesario -->
+                `;
+            } catch (error) {
+                console.error('Error al obtener detalles del platillo:', error);
+                const saucerDetails = document.getElementById('saucerDetails');
+                saucerDetails.textContent = 'Error al obtener detalles del platillo';
+            }
+        }
+    </script>
+</body>
+</html>
