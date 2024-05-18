@@ -5,18 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de Platillo</title>
     <style>
-        /* Estilos CSS aquí */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #saucerDetails {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        #saucerDetails p {
+            margin: 0 0 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>Detalles de Platillo</h1>
+    <div class="container">
+        <h1>Detalles de Platillo</h1>
 
-    <label for="saucerIdInput">ID del Platillo:</label>
-    <input type="number" id="saucerIdInput" placeholder="Ingrese el ID del platillo">
+        <label for="saucerIdInput">ID del Platillo:</label>
+        <input type="number" id="saucerIdInput" placeholder="Ingrese el ID del platillo">
 
-    <button onclick="fetchSaucerDetails()">Mostrar Detalles</button>
+        <button onclick="fetchSaucerDetails()">Mostrar Detalles</button>
 
-    <div id="saucerDetails"></div>
+        <div id="saucerDetails"></div>
+    </div>
 
     <script>
         async function fetchSaucerDetails() {
@@ -37,11 +108,9 @@
 
                 const saucerDetails = document.getElementById('saucerDetails');
                 saucerDetails.innerHTML = `
-                    <p>ID: ${saucer.id}</p>
-                    <p>Nombre: ${saucer.name}</p>
-                    <p>Precio: $${saucer.price}</p>
-                    <!-- Agrega más detalles del platillo aquí según sea necesario -->
-                `;
+                    <p><strong>ID:</strong> ${saucer.id}</p>
+                    <p><strong>Nombre:</strong> ${saucer.name}</p>
+                    <p><strong>Monto Inicial:</strong> $${saucer.price}</p>`;
             } catch (error) {
                 console.error('Error al obtener detalles del platillo:', error);
                 const saucerDetails = document.getElementById('saucerDetails');

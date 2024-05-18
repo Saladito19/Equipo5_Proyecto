@@ -110,8 +110,7 @@
                 clientDetails.innerHTML = `
                     <p><strong>ID:</strong> ${client.id}</p>
                     <p><strong>Nombre:</strong> ${client.name}</p>
-                    <p><strong>Monto Inicial:</strong> $${client.initialAmount}</p>
-                    <!-- Agrega más detalles del cliente aquí según sea necesario -->`;
+                    <p><strong>Monto Inicial:</strong> $${client.td}</p>`;
             } catch (error) {
                 console.error('Error al obtener detalles del cliente:', error);
                 const clientDetails = document.getElementById('clientDetails');
