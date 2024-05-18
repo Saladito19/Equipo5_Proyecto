@@ -4,10 +4,10 @@ const ticketController = require('../controllers/ticket');
 
 // Ruta para crear un nuevo ticket con múltiples platillos
 router.post('/tickets', async (req, res) => {
-    const { saucerIds, clientId } = req.body;
+    const { buy, clientId} = req.body;
 
     try {
-        await ticketController.createTicket(saucerIds, clientId);
+        await ticketController.createTicket(buy, clientId);
         res.status(201).send("Ticket creado exitosamente.");
     } catch (error) {
         console.error("Error al crear el ticket:", error);

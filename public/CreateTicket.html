@@ -12,8 +12,8 @@
     <h1>Crear Nuevo Ticket</h1>
 
     <form id="createTicketForm">
-        <label for="saucerIds">IDs de Platillos (separados por coma):</label>
-        <input type="text" id="saucerIds" name="saucerIds" placeholder="Ingrese los IDs de los platillos" required><br><br>
+        <label for="buy">IDs de Platillos (separados por coma):</label>
+        <input type="text" id="buy" name="buy" placeholder="Ingrese los IDs de los platillos" required><br><br>
         
         <label for="clientId">ID del Cliente:</label>
         <input type="number" id="clientId" name="clientId" placeholder="Ingrese el ID del cliente" required><br><br>
@@ -29,7 +29,7 @@
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const saucerIds = document.getElementById('saucerIds').value.split(',').map(id => id.trim());
+            const buy = document.getElementById('buy').value.split(',').map(id => id.trim());
             const clientId = document.getElementById('clientId').value;
 
             try {
@@ -38,7 +38,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ saucerIds, clientId })
+                    body: JSON.stringify({ buy, clientId })
                 });
 
                 const message = await response.text();

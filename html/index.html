@@ -118,9 +118,9 @@
         </div>
         <!-- Botones adicionales - Tercera columna -->
         <div class="button-container button-container-left">
-            <button class="btn btn-primary" onclick="window.location.href = '/TicketList';">Lista Tickets</button>
-            <button class="btn btn-primary" onclick="window.location.href = '/TicketID';">Consultar ID</button>
-            <button class="btn btn-primary" onclick="window.location.href = '/CreateTicket';">Crear Ticket</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/TicketList.html';">Lista Tickets</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/TicketID.html';">Consultar ID</button>
+            <button class="btn btn-primary" onclick="window.location.href = '/CreateTicket.html';">Crear Ticket</button>
         </div>
         <div class="ad-container" id="adContainer">
             <div class="close-button" id="closeBtn">X</div>
@@ -134,9 +134,29 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         document.getElementById('reclamarBtn').addEventListener('click', function() {
-            // Redirigir a otra URL al cerrar el anuncio (opcional)
-            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            // Obtener el contenedor del anuncio
+            var adContainer = document.getElementById('adContainer');
+
+            // Obtener las dimensiones del contenedor del anuncio
+            var adWidth = adContainer.offsetWidth;
+            var adHeight = adContainer.offsetHeight;
+
+            // Calcular una posición aleatoria dentro del área visible de la pantalla
+            var screenWidth = window.innerWidth;
+            var screenHeight = window.innerHeight;
+
+            var maxLeft = screenWidth - adWidth;
+            var maxTop = screenHeight - adHeight;
+
+            var randomLeft = Math.floor(Math.random() * maxLeft);
+            var randomTop = Math.floor(Math.random() * maxTop);
+
+            // Aplicar la nueva posición al contenedor del anuncio
+            adContainer.style.position = 'absolute'; // Asegurarse de que la posición es absoluta
+            adContainer.style.left = randomLeft + 'px';
+            adContainer.style.top = randomTop + 'px';
         });
+
         document.getElementById('closeBtn').addEventListener('click', function() {
             // Redirigir a otra URL al cerrar el anuncio (opcional)
             window.location.href = 'https://www.youtube.com/watch?v=tgTUtfb0Ok8';

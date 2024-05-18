@@ -38,8 +38,9 @@
                 const ticketDetails = document.getElementById('ticketDetails');
                 ticketDetails.innerHTML = `
                     <p>ID: ${ticket.id}</p>
+                    <p>Platillos: ${ticket.buy.join(',')}</p>
                     <p>Cliente: ${ticket.clientId}</p>
-                    <p>Platillos: ${ticket.saucerIds.join(',')}</p>
+                    <p>Monto: $${ticket.totalAmount}</p>
                     <!-- Agrega más detalles del ticket aquí según sea necesario -->
                 `;
             } catch (error) {

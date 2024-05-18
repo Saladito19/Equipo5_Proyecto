@@ -5,7 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Clientes</title>
     <style>
-        /* Estilos CSS aquí */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #clientsList {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .clientItem {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 80%;
+        }
+
+        .clientItem p {
+            margin: 0;
+            font-size: 16px;
+        }
+        
+        .clientItem:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
@@ -23,11 +61,15 @@
                 const clients = await response.json();
 
                 const clientsList = document.getElementById('clientsList');
-                clientsList.innerHTML = '<h2>Clientes:</h2>';
                 clients.forEach(client => {
-                    clientsList.innerHTML += `
-                        <p>ID: ${client.id} - Nombre: ${client.name} - Monto Inicial: $${client.initialAmount}</p>
+                    const clientItem = document.createElement('div');
+                    clientItem.className = 'clientItem';
+                    clientItem.innerHTML = `
+                        <p><strong>ID:</strong> ${client.id}</p>
+                        <p><strong>Nombre:</strong> ${client.name}</p>
+                        <p><strong>Monto Inicial:</strong> $${client.td}</p>
                     `;
+                    clientsList.appendChild(clientItem);
                 });
             } catch (error) {
                 console.error('Error al obtener la lista de clientes:', error);

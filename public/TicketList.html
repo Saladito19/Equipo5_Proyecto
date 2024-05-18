@@ -26,7 +26,7 @@
                 ticketsList.innerHTML = '<h2>Tickets:</h2>';
                 tickets.forEach(ticket => {
                     ticketsList.innerHTML += `
-                        <p>ID: ${ticket.id} - Cliente: ${ticket.clientId} - Platillos: ${ticket.saucerIds.join(',')}</p>
+                        <p>ID: ${ticket.id} - Platillos: ${ticket.buy.join(',')} - Cliente: ${ticket.clientId} - Monto: ${ticket.totalAmount}</p>
                     `;
                 });
             } catch (error) {
